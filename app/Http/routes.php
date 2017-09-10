@@ -12,18 +12,9 @@
 */
 
 $app->get('/', function () {
-    if (env('API')) {
-        return redirect('/profile');
-    }
-    return redirect('/home');
+    return redirect('/profile');
 });
 
-// Portal Routes
-$app->get('/home', 'IndexController@index');
-$app->get('/post/{id}', 'PostController@index');
-$app->get('/post/{id}/{slug}', 'PostController@index');
-
-// API Routes
 $app->group(['middleware' => 'cors'], function () use ($app) {
     $app->get('/profile', 'ProfileController@index');
     $app->get('/posts', 'PostsController@search');

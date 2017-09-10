@@ -8,6 +8,6 @@ class IndexControllerTest extends \TestCase
     {
         $response = $this->call('GET', '/');
         self::assertEquals(302, $response->status());
-        self::assertContains('home', $response->content());
+        self::assertContains('profile', $response->content());
     }
 }
