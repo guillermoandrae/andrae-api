@@ -1,0 +1,65 @@
+<project name="Application Build" default="build" basedir=".">
+
+    <property file="./build.properties" />
+
+    <!-- Build Targets -->
+    <target name="test" depends="phpcs, phpunit" description="Runs the local targets" />
+    <target name="build" depends="phpcs, phpunit-coverage, apidoc" description="Runs the local targets" />
+    <target name="remote-build" depends="build, coveralls" description="Runs the local and remote targets"/>
+
+    <!-- Clean up from previous tasks -->
+    <target name="clean" hidden="true">
+        <delete dir="${reports.dir}"/>
+    </target>
+
+    <!-- Prepare for new task reports -->
+    <target name="prepare" depends="clean" hidden="true">
+        <mkdir dir="${reports.dir}"/>
+    </target>
+
+    <!-- PHP Code Sniffer -->
+    <target name="phpcs" depends="prepare">
+        <echo msg="Checking code style..."/>
+        <exec executable="${bin.dir}/phpcs" output="${reports.dir}/phpcs.log" checkreturn="true">
+            <arg value="--standard=PSR2"/>
+            <arg value="--extensions=php"/>
+            <arg value="app"/>
+        </exec>
+        <echo msg="Code is PSR-2 compliant!"/>
+    </target>
+
+    <!-- PHPUnit w/o clover code coverage -->
+    <target name="phpunit" depends="prepare">
+        <echo msg="Running tests..."/>
+        <exec executable="${bin.dir}/phpunit" output="${reports.dir}/phpunit.log" checkreturn="true"/>
+        <echo msg="Tests pass!"/>
+    </target>
+
+    <!-- PHPUnit w/ clover code coverage -->
+    <target name="phpunit-coverage" depends="prepare">
+        <echo msg="Running tests and generating Clover code coverage report..."/>
+        <exec executable="${bin.dir}/phpunit" output="${reports.dir}/phpunit.log" checkreturn="true">
+            <arg value="--coverage-clover=${reports.dir}/clover.xml"/>
+        </exec>
+        <echo msg="Tests were run and the Clover code coverage report was successfully generated!"/>
+    </target>
+
+    <!-- API Documentation -->
+    <target name="apidoc">
+        <echo msg="Generating API documentation..."/>
+        <exec executable="${project.basedir}/node_modules/.bin/apidoc" output="${reports.dir}/apidoc.log" checkreturn="true">
+            <arg value="-i"/>
+            <arg value="${project.basedir}/app/"/>
+            <arg value="-o"/>
+            <arg value="${project.basedir}/public/docs"/>
+        </exec>
+        <echo msg="API documentation was successfully generated!"/>
+    </target>
+
+    <!-- Coveralls -->
+    <target name="coveralls" depends="phpunit">
+        <echo msg="Sending coverage data to Coveralls..."/>
+        <exec executable="${bin.dir}/coveralls" output="${reports.dir}/coveralls.log" checkreturn="true"/>
+        <echo msg="Coverage was sent to Coveralls!"/>
+    </target>
+</project>
