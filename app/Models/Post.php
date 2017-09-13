@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+/**
+ * @SWG\Definition()
+ */
 final class Post extends AbstractModel
 {
     /**
@@ -30,62 +33,98 @@ final class Post extends AbstractModel
     const SOURCE_INSTAGRAM = 'Instagram';
 
     /**
+     * The ID of the post on the originating platform.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $externalId = '';
 
     /**
+     * The name of the originating platform.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $source = '';
 
     /**
+     * The post's original author.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $originalAuthor = '';
 
     /**
+     * The post title.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $title = '';
 
     /**
+     * The post slug.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $slug = '';
 
     /**
+     * The post body.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $body = '';
 
     /**
+     * The post summary.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $summary = '';
 
     /**
+     * A description of the post.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $description = '';
 
     /**
+     * The link to the post on the originating platform.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $htmlUrl = '';
 
     /**
+     * The link to the post thumbnail image.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $thumbnailUrl = '';
 
     /**
+     * The human-friendly relative date of the post.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $relativeCreatedAt = '';
 
     /**
+     * The action link.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $action = '';
 

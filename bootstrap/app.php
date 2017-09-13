@@ -24,6 +24,7 @@ $app = new Laravel\Lumen\Application(
 );
 
 $app->configure('services');
+$app->configure('swagger-lume');
 
 $app->withFacades();
 
@@ -77,6 +78,7 @@ $app->routeMiddleware([
 |
 */
 
+$app->register(SwaggerLume\ServiceProvider::class);
 $app->register(Aws\Laravel\AwsServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\CommandServiceProvider::class);

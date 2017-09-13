@@ -5,12 +5,18 @@ namespace App\Models;
 abstract class AbstractModel implements ModelInterface
 {
     /**
+     * The ID.
+     *
      * @var string
+     * @SWG\Property()
      */
     protected $id = '';
 
     /**
+     * The creation date.
+     *
      * @var \DateTime
+     * @SWG\Property()
      */
     protected $createdAt;
 

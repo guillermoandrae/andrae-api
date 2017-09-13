@@ -11,11 +11,10 @@
 |
 */
 
-$app->get('/', function () {
-    return redirect('/profile');
-});
-
 $app->group(['middleware' => 'cors'], function () use ($app) {
+    $app->get('/', function () {
+        return redirect('/profile');
+    });
     $app->get('/profile', 'ProfileController@index');
     $app->get('/posts', 'PostsController@search');
     $app->put('/posts', ['middleware' => 'auth'], 'PostsController@create');
