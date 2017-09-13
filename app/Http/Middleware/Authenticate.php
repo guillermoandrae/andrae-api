@@ -2,10 +2,9 @@
 
 namespace App\Http\Middleware;
 
-use App\Repositories\PostRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use Closure;
-use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Http\Response;
 
 class Authenticate
 {
@@ -31,17 +30,18 @@ class Authenticate
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @return mixed
+     * @throws \ErrorException
      */
     public function handle($request, Closure $next)
     {
         $username = $request->getUser();
         $password = $request->getPassword();
         if (!$username || !$password) {
-            throw new \Exception(403);
+            throw new \ErrorException(Response::HTTP_UNAUTHORIZED);
         }
 
         if (!$user = $this->userRepository->findByUsernameAndPassword($username, $password)) {
-            return response('Not allowed', 403);
+            return response('Not allowed', Response::HTTP_UNAUTHORIZED);
         }
         return $next($request);
     }
