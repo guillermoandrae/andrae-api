@@ -1,0 +1,19 @@
+languages:
+  PHP: true
+engines:
+  phpcodesniffer:
+    enabled: true
+  phpmd:
+    enabled: true
+ratings:
+  paths:
+    - app/**
+exclude_paths:
+  - config/**/*
+  - database/**/*
+  - public/**/*
+  - reports/**/*
+  - resources/**/*
+  - storage/**/*
+  - tests/**/*
+  - vendor/**/*
