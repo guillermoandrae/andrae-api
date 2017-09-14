@@ -1,4 +1,4 @@
 ## andrae API
-[![Coveralls](https://img.shields.io/coveralls/guillermoandrae/andrae.svg?style=flat-square)]() [![approval](https://img.shields.io/badge/approved%20by-your%20mom-green.svg?style=flat-square)]() 
+[![Travis](https://img.shields.io/travis/guillermoandrae/andrae-api.svg?style=flat-square)]() [![Coveralls](https://img.shields.io/coveralls/guillermoandrae/andrae-api.svg?style=flat-square)]() [![approval](https://img.shields.io/badge/approved%20by-your%20mom-green.svg?style=flat-square)]() 
 
-You know what this is.
+The API you've always wanted to build.
