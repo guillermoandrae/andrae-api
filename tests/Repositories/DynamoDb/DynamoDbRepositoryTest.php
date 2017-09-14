@@ -1,9 +1,8 @@
 <?php
 
-namespace Test\Repositories;
+namespace Test\Repositories\DynamoDb;
 
-use App\Helpers\PostHelper;
-use App\Models\Post;
+use App\Helpers\DateHelper;
 use App\Repositories\PostRepository;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\MockHandler;
@@ -32,7 +31,7 @@ class DynamoDbRepositoryTest extends \TestCase
             'slug' => 'this-is-a-tweet',
             'summary' => 'This is a tweet!',
             'description' => 'This is a tweet!',
-            'relativeCreatedAt' => PostHelper::getRelativeTime($dateTime->getTimestamp()),
+            'relativeCreatedAt' => DateHelper::getRelativeTime($dateTime->getTimestamp()),
             'action' => '<a href="/post/1">Here</a> + <a target="_blank" href="https://this.tweet">There</a>',
             'createdAt' => $dateTime,
         ];

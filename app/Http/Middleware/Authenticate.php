@@ -2,12 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Routing\JsonResponseBuilderTrait;
 use App\Repositories\UserRepositoryInterface;
 use Closure;
-use Illuminate\Http\Response;
 
 class Authenticate
 {
+    use JsonResponseBuilderTrait;
+
     /**
      * @var UserRepositoryInterface
      */
@@ -36,12 +38,8 @@ class Authenticate
     {
         $username = $request->getUser();
         $password = $request->getPassword();
-        if (!$username || !$password) {
-            throw new \ErrorException(Response::HTTP_UNAUTHORIZED);
-        }
-
         if (!$user = $this->userRepository->findByUsernameAndPassword($username, $password)) {
-            return response('Not allowed', Response::HTTP_UNAUTHORIZED);
+            return $this->respondWithUnauthorized();
         }
         return $next($request);
     }

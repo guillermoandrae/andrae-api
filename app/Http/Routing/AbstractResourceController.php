@@ -5,7 +5,6 @@ namespace App\Http\Routing;
 use App\Repositories\RepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Routing\Controller;
 
 /**
@@ -68,10 +67,8 @@ abstract class AbstractResourceController extends Controller implements Resource
                 $result = $this->repository->findAll($offset, $limit);
             }
             return $this->respond($result);
-        } catch (ValidationException $ex) {
-            return $this->respondWithError($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } catch (\Exception $ex) {
-            return $this->respondWithError($ex->getMessage());
+            return $this->respondWithError($ex->getMessage(), $ex->getCode());
         }
     }
 
@@ -82,13 +79,13 @@ abstract class AbstractResourceController extends Controller implements Resource
     public function create(Request $request)
     {
         try {
-            $data = $request->json()->all();
+            if (!$data = $request->json()->all()) {
+                throw new \ErrorException(ResourceControllerInterface::ERROR_NO_CONTENT, Response::HTTP_BAD_REQUEST);
+            }
             $result = $this->repository->create($data);
             return $this->respond($result);
-        } catch (ValidationException $ex) {
-            return $this->respondWithError($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } catch (\Exception $ex) {
-            return $this->respondWithError($ex->getMessage());
+            return $this->respondWithError($ex->getMessage(), $ex->getCode());
         }
     }
 
@@ -108,30 +105,8 @@ abstract class AbstractResourceController extends Controller implements Resource
             );
             $result = $this->repository->findById((int) $id);
             return $this->respond($result);
-        } catch (ValidationException $ex) {
-            $this->respondWithError($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         } catch (\Exception $ex) {
-            $this->respondWithError($ex->getMessage());
+            return $this->respondWithError($ex->getMessage(), $ex->getCode());
         }
-    }
-
-    /**
-     * @param mixed $id The resource ID.
-     * @param Request $request The HTTP request.
-     * @return Response
-     */
-    public function update($id, Request $request)
-    {
-        return $this->respondWithNotFound();
-    }
-
-    /**
-     * @param mixed $id The resource ID.
-     * @param Request $request The HTTP request.
-     * @return Response
-     */
-    public function delete($id, Request $request)
-    {
-        return $this->respondWithNotFound();
     }
 }

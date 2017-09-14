@@ -23,12 +23,12 @@ class PostTest extends \TestCase
         'body' => 'This is a tweet!',
         'htmlUrl' => 'https://this.tweet',
         'thumbnailUrl' => 'https://this.image',
-        'title' => '',
-        'slug' => '',
-        'summary' => '',
-        'description' => '',
-        'relativeCreatedAt' => '',
-        'action' => '',
+        'title' => 'Twitter - This is a tweet!',
+        'slug' => 'this-is-a-tweet',
+        'summary' => 'This is a tweet!',
+        'description' => 'This is a tweet!',
+        'relativeCreatedAt' => '1 day ago',
+        'action' => 'Test',
     ];
 
     public function testGetId()
@@ -66,9 +66,39 @@ class PostTest extends \TestCase
         self::assertEquals($this->postData['thumbnailUrl'], $this->post->getThumbnailUrl());
     }
 
+    public function testGetRelativeCreatedAt()
+    {
+        self::assertEquals($this->postData['relativeCreatedAt'], $this->post->getRelativeCreatedAt());
+    }
+
     public function testGetCreatedAt()
     {
         self::assertEquals($this->postData['createdAt'], $this->post->getCreatedAt());
+    }
+
+    public function testGetSummary()
+    {
+        self::assertEquals($this->postData['summary'], $this->post->getSummary());
+    }
+
+    public function testGetTitle()
+    {
+        self::assertEquals($this->postData['title'], $this->post->getTitle());
+    }
+
+    public function testGetSlug()
+    {
+        self::assertEquals($this->postData['slug'], $this->post->getSlug());
+    }
+
+    public function testGetDescription()
+    {
+        self::assertEquals($this->postData['description'], $this->post->getDescription());
+    }
+
+    public function testGetAction()
+    {
+        self::assertEquals($this->postData['action'], $this->post->getAction());
     }
 
     public function testToArray()

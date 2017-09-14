@@ -2,6 +2,7 @@
 
 namespace App\Repositories\DynamoDb;
 
+use App\Helpers\DateHelper;
 use App\Helpers\PostHelper;
 use App\Models\ModelInterface;
 use App\Repositories\PostRepositoryInterface;
@@ -43,7 +44,7 @@ class PostRepository extends AbstractRepository implements PostRepositoryInterfa
             return parent::populate($data);
         }
         return parent::populate(array_merge($data, [
-            'relativeCreatedAt' => ['S' => PostHelper::getRelativeTime($data['createdAt']['N'])],
+            'relativeCreatedAt' => ['S' => DateHelper::getRelativeTime($data['createdAt']['N'])],
             'action'            => ['S' => PostHelper::getAction($data['id']['S'], $data['htmlUrl']['S'])],
             'summary'           => ['S' => PostHelper::getSummary($data['body']['S'])],
             'title'             => ['S' => PostHelper::getTitle($data['source']['S'], $data['body']['S'])],

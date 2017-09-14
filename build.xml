@@ -4,7 +4,7 @@
 
     <!-- Build Targets -->
     <target name="test" depends="phpcs, phpunit" description="Runs the local targets" />
-    <target name="build" depends="phpcs, phpunit-coverage, apidoc" description="Runs the local targets" />
+    <target name="build" depends="phpcs, phpunit-coverage" description="Runs the local targets" />
     <target name="remote-build" depends="build, coveralls" description="Runs the local and remote targets"/>
 
     <!-- Clean up from previous tasks -->
@@ -42,18 +42,6 @@
             <arg value="--coverage-clover=${reports.dir}/clover.xml"/>
         </exec>
         <echo msg="Tests were run and the Clover code coverage report was successfully generated!"/>
-    </target>
-
-    <!-- API Documentation -->
-    <target name="apidoc">
-        <echo msg="Generating API documentation..."/>
-        <exec executable="${project.basedir}/node_modules/.bin/apidoc" output="${reports.dir}/apidoc.log" checkreturn="true">
-            <arg value="-i"/>
-            <arg value="${project.basedir}/app/"/>
-            <arg value="-o"/>
-            <arg value="${project.basedir}/public/docs"/>
-        </exec>
-        <echo msg="API documentation was successfully generated!"/>
     </target>
 
     <!-- Coveralls -->

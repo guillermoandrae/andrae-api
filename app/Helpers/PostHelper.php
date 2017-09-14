@@ -14,26 +14,6 @@ class PostHelper
     const TRUNCATED_SUMMARY_LENGTH = 50;
 
     /**
-     * @param string $timeStamp
-     * @return string
-     */
-    public static function getRelativeTime($timeStamp): string
-    {
-        $dateTime = new \DateTime();
-        $dateTime->setTimestamp($timeStamp);
-        return Carbon::now()->diffForHumans(Carbon::createFromTimestamp($dateTime->getTimestamp()), true) . ' ago';
-    }
-
-    /**
-     * @param \DateTime $dateTime
-     * @return string
-     */
-    public static function getDateTimeAttributeValue(\DateTime $dateTime): string
-    {
-        return $dateTime->format('c');
-    }
-
-    /**
      * @param string $body
      * @return string
      */
@@ -64,9 +44,9 @@ class PostHelper
     /**
      * @param string $source
      * @param string $body
-     * @return string
+     * @return mixed
      */
-    public static function getTitle($source, $body): string
+    public static function getTitle($source, $body)
     {
         switch ($source) {
             case Post::SOURCE_TWITTER:
@@ -112,9 +92,5 @@ class PostHelper
     public static function getDescription($body): string
     {
         return self::getSummary($body);
-    }
-
-    public static function getUri()
-    {
     }
 }

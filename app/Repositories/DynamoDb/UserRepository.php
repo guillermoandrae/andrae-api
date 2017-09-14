@@ -8,7 +8,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 {
     protected $tableName = 'users';
 
-    public function findByUsernameAndPassword(string $username, string $password)
+    public function findByUsernameAndPassword($username, $password)
     {
         $filters = [
             'username' => [

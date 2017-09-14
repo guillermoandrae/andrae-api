@@ -16,6 +16,7 @@
     </testsuites>
     <filter>
         <whitelist>
+            <directory suffix=".php">app/Helpers/</directory>
             <directory suffix=".php">app/Http/</directory>
             <directory suffix=".php">app/Models/</directory>
             <directory suffix=".php">app/Repositories/</directory>

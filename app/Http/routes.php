@@ -17,6 +17,6 @@ $app->group(['middleware' => 'cors'], function () use ($app) {
     });
     $app->get('/profile', 'ProfileController@index');
     $app->get('/posts', 'PostsController@search');
-    $app->put('/posts', ['middleware' => 'auth'], 'PostsController@create');
+    $app->put('/posts', ['middleware' => 'auth', 'uses' => 'PostsController@create']);
     $app->get('/posts/{id}', 'PostsController@read');
 });

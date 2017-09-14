@@ -11,9 +11,12 @@ trait JsonResponseBuilderTrait
     /**
      * @return JsonResponse
      */
-    protected function respondWithNotFound()
+    protected function respondWithUnauthorized()
     {
-        return $this->respondWithError('Support for this action does not yet exist.', Response::HTTP_NOT_FOUND);
+        return $this->respondWithError(
+            ResourceControllerInterface::ERROR_UNAUTHORIZED,
+            Response::HTTP_NOT_FOUND
+        );
     }
 
     /**
@@ -21,8 +24,11 @@ trait JsonResponseBuilderTrait
      * @param integer $statusCode
      * @return JsonResponse
      */
-    protected function respondWithError(string $errorMessage, int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR)
+    protected function respondWithError(string $errorMessage, int $statusCode)
     {
+        if ($statusCode === 0) {
+            $statusCode = Response::HTTP_BAD_REQUEST;
+        }
         return response()->json(
             [
                 'error' => [

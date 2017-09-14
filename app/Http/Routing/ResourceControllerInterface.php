@@ -7,6 +7,12 @@ use Illuminate\Http\Response;
 
 interface ResourceControllerInterface
 {
+    const ERROR_UNAUTHORIZED = 'Not allowed.';
+
+    const ERROR_NOT_FOUND = 'Support for this action does not yet exist.';
+
+    const ERROR_NO_CONTENT = 'Missing content.';
+
     /**
      * @param Request $request The HTTP request.
      * @return Response
@@ -25,18 +31,4 @@ interface ResourceControllerInterface
      * @return Response
      */
     public function read($id, Request $request);
-
-    /**
-     * @param mixed $id The resource ID.
-     * @param Request $request The HTTP request.
-     * @return Response
-     */
-    public function update($id, Request $request);
-
-    /**
-     * @param mixed $id The resource ID.
-     * @param Request $request The HTTP request.
-     * @return Response
-     */
-    public function delete($id, Request $request);
 }
