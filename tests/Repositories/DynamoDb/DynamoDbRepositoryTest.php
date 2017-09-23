@@ -2,8 +2,6 @@
 
 namespace Test\Repositories\DynamoDb;
 
-use App\Helpers\DateHelper;
-use App\Repositories\PostRepository;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\MockHandler;
 use Aws\Result;
@@ -17,39 +15,21 @@ class DynamoDbRepositoryTest extends \TestCase
      */
     public function testFindById($type)
     {
-        $modelClassName = '\App\Models\\' . $type;
-        $dateTime = new \DateTime('midnight');
-        $expectedModelData = [
-            'id' => 1,
-            'externalId' => 2,
-            'source' => 'Twitter',
-            'originalAuthor' => 'guillermoandrae',
-            'body' => 'This is a tweet!',
-            'htmlUrl' => 'https://this.tweet',
-            'thumbnailUrl' => 'https://this.image',
-            'title' => 'Twitter - This is a tweet!',
-            'slug' => 'this-is-a-tweet',
-            'summary' => 'This is a tweet!',
-            'description' => 'This is a tweet!',
-            'relativeCreatedAt' => DateHelper::getRelativeTime($dateTime->getTimestamp()),
-            'action' => '<a href="/post/1">Here</a> + <a target="_blank" href="https://this.tweet">There</a>',
-            'createdAt' => $dateTime,
-        ];
-        $expectedResult = new $modelClassName($expectedModelData);
-        $repository = $this->getRepository($type, [
-            'Item' => [
-                'id' => ['S' => $expectedModelData['id']],
-                'externalId' => ['S' => $expectedModelData['externalId']],
-                'originalAuthor' => ['S' => $expectedModelData['originalAuthor']],
-                'source' => ['S' => $expectedModelData['source']],
-                'htmlUrl' => ['S' => $expectedModelData['htmlUrl']],
-                'thumbnailUrl' => ['S' => $expectedModelData['thumbnailUrl']],
-                'body' => ['S' => $expectedModelData['body']],
-                'createdAt' => ['N' => $expectedModelData['createdAt']->getTimestamp()],
-            ]
-        ]);
-        $result = $repository->findById('1');
-        self::assertEquals($expectedResult, $result);
+        $expectedModelData = MockRepositoryDataFactory::factory($type);
+        $result = $this->getRepositoryByType($type)->findById('1');
+        self::assertEquals($expectedModelData[0]['id'], $result->toArray()['id']);
+    }
+
+    /**
+     * @param string $type
+     * @dataProvider getTypes
+     */
+    public function testFindAll($type)
+    {
+        self::markTestSkipped();
+        $expectedModelData = MockRepositoryDataFactory::factory($type);
+        $result = $this->getRepositoryByType($type)->findAll();
+        self::assertEquals(new Collection($expectedModelData), $result);
     }
 
     /**
@@ -90,12 +70,54 @@ class DynamoDbRepositoryTest extends \TestCase
         $result = $repository->search('foo');
         self::assertEquals($expectedResult[0]->getSource(), $result[0]->getSource());
         self::assertEquals($expectedResult[1]->getSource(), $result[1]->getSource());
-
     }
 
     public function getTypes()
     {
         return [ ['Post'] ];
+    }
+
+    private function getRepositoryByType($type)
+    {
+        $mock = new MockHandler();
+        $expectedModelData = MockRepositoryDataFactory::factory($type);
+        $item = [];
+        switch ($type) {
+            case 'Post':
+                $item = [
+                    'id' => ['S' => $expectedModelData[0]['id']],
+                    'externalId' => ['S' => $expectedModelData[0]['externalId']],
+                    'originalAuthor' => ['S' => $expectedModelData[0]['originalAuthor']],
+                    'source' => ['S' => $expectedModelData[0]['source']],
+                    'htmlUrl' => ['S' => $expectedModelData[0]['htmlUrl']],
+                    'thumbnailUrl' => ['S' => $expectedModelData[0]['thumbnailUrl']],
+                    'body' => ['S' => $expectedModelData[0]['body']],
+                    'createdAt' => ['N' => $expectedModelData[0]['createdAt']],
+                ];
+                break;
+            case 'User':
+                $item = [
+                    'id' => ['S' => $expectedModelData['id']],
+                    'externalId' => ['S' => $expectedModelData['externalId']],
+                    'originalAuthor' => ['S' => $expectedModelData['originalAuthor']],
+                    'source' => ['S' => $expectedModelData['source']],
+                    'htmlUrl' => ['S' => $expectedModelData['htmlUrl']],
+                    'thumbnailUrl' => ['S' => $expectedModelData['thumbnailUrl']],
+                    'body' => ['S' => $expectedModelData['body']],
+                    'createdAt' => ['N' => $expectedModelData['createdAt']],
+                ];
+                break;
+        }
+
+        $result = new Result(['Item' => $item]);
+        $mock->append($result);
+        $client = new DynamoDbClient([
+            'version' => 'latest',
+            'region' => env('AWS_REGION'),
+            'handler' => $mock,
+        ]);
+        $repositoryClassName = sprintf('\App\Repositories\DynamoDb\%sRepository', $type);
+        return new $repositoryClassName($client);
     }
 
     private function getRepository($type, $data)

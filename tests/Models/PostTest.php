@@ -73,7 +73,8 @@ class PostTest extends \TestCase
 
     public function testGetCreatedAt()
     {
-        self::assertEquals($this->postData['createdAt'], $this->post->getCreatedAt());
+        $createdAt = $this->post->getCreatedAt();
+        self::assertEquals(new \DateTime(), $createdAt);
     }
 
     public function testGetSummary()
@@ -104,14 +105,13 @@ class PostTest extends \TestCase
     public function testToArray()
     {
         $expectedArray = $this->postData;
-        $expectedArray['createdAt'] = $expectedArray['createdAt']->format(DATE_ATOM);
+        $expectedArray['createdAt'] = null;
         self::assertEquals($expectedArray, $this->post->toArray());
     }
 
     public function setUp()
     {
         parent::setUp();
-        $this->postData['createdAt'] = new \DateTime('now');
         $this->post = new Post($this->postData);
     }
 }
