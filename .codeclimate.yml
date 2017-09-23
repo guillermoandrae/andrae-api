@@ -9,6 +9,9 @@ ratings:
   paths:
     - app/**
 exclude_paths:
+  - app/Console/Kernel.php
+  - app/Exceptions/**
+  - app/Listeners/ExampleListener.php
   - config/**/*
   - database/**/*
   - public/**/*
