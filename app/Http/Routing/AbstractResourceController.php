@@ -104,6 +104,9 @@ abstract class AbstractResourceController extends Controller implements Resource
                 ]
             );
             $result = $this->repository->findById((int) $id);
+            if (!$result->getId()) {
+                return $this->respondWithNotFound();
+            }
             return $this->respond($result);
         } catch (\Exception $ex) {
             return $this->respondWithError($ex->getMessage(), $ex->getCode());

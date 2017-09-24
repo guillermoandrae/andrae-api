@@ -152,7 +152,7 @@ abstract class AbstractRepository implements RepositoryInterface
             return $items;
         }
         foreach ($iterator as $item) {
-            $items[] = $this->populate($item);
+            $items->push($this->populate($item));
         }
         return $items->sortByDesc(function (ModelInterface $item) {
             return $item->getCreatedAt()->getTimestamp();

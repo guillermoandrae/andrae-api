@@ -2,6 +2,7 @@
 
 namespace App\Http\Routing;
 
+use App\Models\ModelInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -15,6 +16,17 @@ trait JsonResponseBuilderTrait
     {
         return $this->respondWithError(
             ResourceControllerInterface::ERROR_UNAUTHORIZED,
+            Response::HTTP_UNAUTHORIZED
+        );
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    protected function respondWithNotFound()
+    {
+        return $this->respondWithError(
+            ResourceControllerInterface::ERROR_NOT_FOUND,
             Response::HTTP_NOT_FOUND
         );
     }
@@ -46,14 +58,14 @@ trait JsonResponseBuilderTrait
      */
     protected function respond($output, int $statusCode = Response::HTTP_OK)
     {
-        $data = [];
-        if (is_a($output, Arrayable::class)) {
-            $data = $output->toArray();
+        $response = ['data' => []];
+        if (is_a($output, ModelInterface::class)) {
+            $response['data'] = $output->toArray();
         } elseif (isset($output[0]) && is_a($output[0], Arrayable::class)) {
             foreach ($output as $datum) {
-                $data[] = $datum->toArray();
+                $response['data'][] = $datum->toArray();
             }
         }
-        return response()->json(['data' => $data])->setStatusCode($statusCode);
+        return response()->json($response)->setStatusCode($statusCode);
     }
 }

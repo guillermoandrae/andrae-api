@@ -9,7 +9,7 @@ interface ResourceControllerInterface
 {
     const ERROR_UNAUTHORIZED = 'Not allowed.';
 
-    const ERROR_NOT_FOUND = 'Support for this action does not yet exist.';
+    const ERROR_NOT_FOUND = 'Resource not found.';
 
     const ERROR_NO_CONTENT = 'Missing content.';
 

@@ -4,6 +4,7 @@ namespace Test\Http\Routing;
 
 use App\Http\Routing\ResourceControllerInterface;
 use App\Models\AbstractModel;
+use App\Models\Post;
 use App\Repositories\PostRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\Http\Response;
@@ -32,7 +33,7 @@ class ResourceControllerTest extends \TestCase
     public function testRead()
     {
         $response = $this->call('GET', '/posts/1');
-        self::assertContains('createdAt', $response->content());
+        self::assertSame(Response::HTTP_OK, $response->status());
     }
 
     public function testReadBadId()
@@ -98,11 +99,7 @@ class ResourceControllerTest extends \TestCase
     {
         parent::setUp();
 
-        $mockModel = $this->getMockBuilder(AbstractModel::class)
-            ->disableOriginalConstructor()
-            ->disableOriginalClone()
-            ->disableArgumentCloning()
-            ->getMock();
+        $mockModel = new Post(['id' => 1]);
 
         $collection = new Collection([$mockModel]);
 
