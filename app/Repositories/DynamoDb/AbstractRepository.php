@@ -151,9 +151,11 @@ abstract class AbstractRepository implements RepositoryInterface
         if (!$iterator = $this->client->getIterator('Scan', $options)) {
             return $items;
         }
+
         foreach ($iterator as $item) {
             $items->push($this->populate($item));
         }
+
         return $items->sortByDesc(function (ModelInterface $item) {
             return $item->getCreatedAt()->getTimestamp();
         })->slice($offset, $limit);

@@ -6,6 +6,7 @@ use App\Models\ModelInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 trait JsonResponseBuilderTrait
 {
@@ -61,7 +62,7 @@ trait JsonResponseBuilderTrait
         $response = ['data' => []];
         if (is_a($output, ModelInterface::class)) {
             $response['data'] = $output->toArray();
-        } elseif (isset($output[0]) && is_a($output[0], Arrayable::class)) {
+        } elseif (is_a($output, Collection::class)) {
             foreach ($output as $datum) {
                 $response['data'][] = $datum->toArray();
             }
