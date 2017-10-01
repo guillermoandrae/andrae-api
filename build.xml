@@ -5,7 +5,7 @@
     <!-- Build Targets -->
     <target name="test" depends="phpcs, phpunit" description="Runs the local targets" />
     <target name="build" depends="phpcs, phpunit-coverage" description="Runs the local targets" />
-    <target name="remote-build" depends="build, coveralls" description="Runs the local and remote targets"/>
+    <target name="remote-build" depends="phpcs, coveralls" description="Runs the local and remote targets"/>
 
     <!-- Clean up from previous tasks -->
     <target name="clean" hidden="true">
@@ -112,7 +112,7 @@
     </target>
 
     <!-- Coveralls -->
-    <target name="coveralls" depends="phpunit">
+    <target name="coveralls" depends="phpunit-coverage">
         <echo msg="Sending coverage data to Coveralls..."/>
         <exec executable="${bin.dir}/coveralls" output="${reports.dir}/coveralls.log" checkreturn="true"/>
         <echo msg="Coverage was sent to Coveralls!"/>
