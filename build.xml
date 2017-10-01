@@ -114,7 +114,7 @@
     <!-- Coveralls -->
     <target name="coveralls" depends="phpunit-coverage">
         <echo msg="Sending coverage data to Coveralls..."/>
-        <exec executable="${bin.dir}/coveralls" output="${reports.dir}/coveralls.log" checkreturn="true"/>
+        <exec executable="${bin.dir}/coveralls" output="${reports.dir}/coveralls.log" checkreturn="false"/>
         <echo msg="Coverage was sent to Coveralls!"/>
     </target>
 </project>
