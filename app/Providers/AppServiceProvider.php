@@ -19,10 +19,18 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(DynamoDbClient::class, function () {
-            return new DynamoDbClient([
+            $options = [
                 'version' => 'latest',
                 'region' => env('AWS_REGION'),
-            ]);
+                'credentials' => [
+                    'key' => env('AWS_ACCESS_KEY_ID'),
+                    'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                ],
+            ];
+            if ($endpoint = env('AWS_DYNAMODB_ENDPOINT')) {
+                $options['endpoint'] = $endpoint;
+            }
+            return new DynamoDbClient($options);
         });
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(PostRepositoryInterface::class, PostRepository::class);

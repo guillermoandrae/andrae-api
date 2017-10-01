@@ -38,9 +38,15 @@ class Authenticate
     {
         $username = $request->getUser();
         $password = $request->getPassword();
-        if (!$user = $this->userRepository->findByUsernameAndPassword($username, $password)) {
-            return $this->respondWithUnauthorized();
+        try {
+            if (!$user = $this->userRepository->findByUsernameAndPassword($username, $password)) {
+                return $this->respondWithUnauthorized();
+            }
+        } catch (\Exception $ex) {
+            die($ex->getMessage());
         }
+
+        dd('gugug');
         return $next($request);
     }
 }

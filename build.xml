@@ -10,11 +10,76 @@
     <!-- Clean up from previous tasks -->
     <target name="clean" hidden="true">
         <delete dir="${reports.dir}"/>
+        <phingcall target="dynamodb-teardown"/>
     </target>
 
     <!-- Prepare for new task reports -->
     <target name="prepare" depends="clean" hidden="true">
         <mkdir dir="${reports.dir}"/>
+        <phingcall target="dynamodb-setup"/>
+    </target>
+
+    <!-- Set up DynamoDB -->
+    <target name="dynamodb-setup">
+        <mkdir dir="${dynamodb.dir}"/>
+        <echo msg="Downloading DynamoDB..."/>
+        <exec executable="wget">
+            <arg line="http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest.tar.gz"/>
+            <arg line="-O ${dynamodb.dir}/dynamodb_local_latest.tar.gz"/>
+        </exec>
+        <echo msg="Extracting DynamoDB..."/>
+        <exec command="tar -xzf ${dynamodb.dir}/dynamodb_local_latest.tar.gz -C ${dynamodb.dir}"/>
+        <echo msg="Starting DynamoDB..."/>
+        <exec executable="java" output="${reports.dir}/dynamodb.log" spawn="true">
+            <arg line="-Djava.library.path=${dynamodb.dir}/DynamoDBLocal_lib"/>
+            <arg line="-jar ${dynamodb.dir}/DynamoDBLocal.jar"/>
+            <arg line="-inMemory"/>
+            <arg line="-port 8003"/>
+        </exec>
+        <echo msg="DynamoDB is running!"/>
+        <echo msg="Creating posts table..."/>
+        <phingcall target="dynamodb-create-table">
+            <property name="dynamodb-table" value="posts"/>
+        </phingcall>
+        <echo msg="Seeding posts table..."/>
+        <phingcall target="dynamodb-seed-table">
+            <property name="dynamodb-table" value="posts"/>
+        </phingcall>
+        <echo msg="Creating users table..."/>
+        <phingcall target="dynamodb-create-table">
+            <property name="dynamodb-table" value="users"/>
+        </phingcall>
+        <echo msg="Seeding users table..."/>
+        <phingcall target="dynamodb-seed-table">
+            <property name="dynamodb-table" value="users"/>
+        </phingcall>
+    </target>
+
+    <target name="dynamodb-create-table">
+        <exec executable="aws" description="Creating table">
+            <arg line="dynamodb create-table"/>
+            <arg line="--table-name ${dynamodb-table}"/>
+            <arg line="--attribute-definitions AttributeName=id,AttributeType=S"/>
+            <arg line="--key-schema AttributeName=id,KeyType=HASH"/>
+            <arg line="--provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=10" />
+        </exec>
+    </target>
+
+    <target name="dynamodb-seed-table">
+        <exec executable="aws" description="Seeding table">
+            <arg line="dynamodb put-item"/>
+            <arg line="--table-name ${dynamodb-table}"/>
+            <arg line="--item file://${seeds.dir}/${dynamodb-table}.json"/>
+        </exec>
+    </target>
+
+    <!-- Tear down DynamoDB -->
+    <target name="dynamodb-teardown">
+        <echo msg="Shutting down DynamoDB..."/>
+        <exec command="ps aux | grep -i DynamoDB | awk {'print $2'} | xargs kill"/>
+        <echo msg="Removing DynamoDB files..."/>
+        <delete dir="${dynamodb.dir}"/>
+        <echo msg="DynamoDB has been cleaned up!"/>
     </target>
 
     <!-- PHP Code Sniffer -->
@@ -31,17 +96,19 @@
     <!-- PHPUnit w/o clover code coverage -->
     <target name="phpunit" depends="prepare">
         <echo msg="Running tests..."/>
-        <exec executable="${bin.dir}/phpunit" output="${reports.dir}/phpunit.log" checkreturn="true"/>
+        <exec executable="${bin.dir}/phpunit" checkreturn="true"/>
         <echo msg="Tests pass!"/>
+        <phingcall target="dynamodb-teardown"/>
     </target>
 
     <!-- PHPUnit w/ clover code coverage -->
     <target name="phpunit-coverage" depends="prepare">
         <echo msg="Running tests and generating Clover code coverage report..."/>
-        <exec executable="${bin.dir}/phpunit" output="${reports.dir}/phpunit.log" checkreturn="true">
+        <exec executable="${bin.dir}/phpunit" checkreturn="true">
             <arg value="--coverage-clover=${reports.dir}/clover.xml"/>
         </exec>
         <echo msg="Tests were run and the Clover code coverage report was successfully generated!"/>
+        <phingcall target="dynamodb-teardown"/>
     </target>
 
     <!-- Coveralls -->

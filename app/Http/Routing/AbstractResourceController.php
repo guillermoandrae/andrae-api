@@ -79,11 +79,12 @@ abstract class AbstractResourceController extends Controller implements Resource
     public function create(Request $request)
     {
         try {
+            dd($request);
             if (!$data = $request->json()->all()) {
                 throw new \ErrorException(ResourceControllerInterface::ERROR_NO_CONTENT, Response::HTTP_BAD_REQUEST);
             }
             $result = $this->repository->create($data);
-            return $this->respond($result);
+            return $this->respond($result, Response::HTTP_CREATED);
         } catch (\Exception $ex) {
             return $this->respondWithError($ex->getMessage(), $ex->getCode());
         }

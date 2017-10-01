@@ -24,6 +24,10 @@
     </filter>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_DEBUG" value="true"/>
         <env name="CACHE_DRIVER" value="array"/>
+        <env name="AWS_ACCESS_KEY_ID" value="123456"/>
+        <env name="AWS_SECRET_ACCESS_KEY" value="123456"/>
+        <env name="AWS_DYNAMODB_ENDPOINT" value="http://localhost:8003"/>
     </php>
 </phpunit>
