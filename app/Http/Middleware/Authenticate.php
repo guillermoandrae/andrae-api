@@ -45,8 +45,6 @@ class Authenticate
         } catch (\Exception $ex) {
             die($ex->getMessage());
         }
-
-        dd('gugug');
         return $next($request);
     }
 }
